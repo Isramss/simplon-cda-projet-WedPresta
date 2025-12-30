@@ -82,18 +82,66 @@ async function register(req, res) {
 // Connexion
 
 async function login(req, res) {
+  console.log("login - body reçu :", req.body);
+
   try {
-    console.log("login - body reçu :", req.body);
+    const { email, motDePasse } = req.body;
+
+    // je re verifie les champs obligatoires
+    if (!email || !motDePasse) {
+      return res
+        .status(400)
+        .json({ message: "Email et mot de passe obligatoires" });
+    }
+    // Regex
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Format d'email invalide" });
+    }
+
+    // Je recupere les informations de l'utilisateur qui souhaite se connecter
+    const result = await pool.query(
+      `SELECT u.id_utilisateur, u.email, u.mot_de_passe, r.code_role
+        FROM utilisateurs u
+        JOIN roles r ON u.id_role = r.id_role
+        WHERE u.email = $1`,
+      [email.toLowerCase().trim()]
+    );
+
+    if (result.rows.length === 0) {
+      return res.Status(400).json({ message: "Identifiant invalides" });
+    }
+
+    const user = result.rows[0];
+
+    // Mtn je verifie le mdp avec Bcrypt
+    const isValidPassword = await bcrypt.compare(motDePasse, user.mot_de_passe);
+    if (!isValidPassword) {
+      return res.status(400).json({ message: "Identifiants invalides" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id_utilisateur, role: user.code_role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+    );
 
     return res.json({
-      message: "login OK (stub, pas encore connecté à la BDD)",
-      bodyRecu: req.body,
+      message: "Connexion réussie",
+      user: {
+        id: user.id_utilisateur,
+        nom: user.nom,
+        email: user.email,
+        role: user.code_role,
+      },
+      token,
     });
   } catch (error) {
-    console.error("Erreur dans login (stub) :", error);
+    console.error("Erreur dans login :", error);
     return res
       .status(500)
-      .json({ message: "Erreur serveur dans login (stub)" });
+      .json({ message: "Erreur serveur lors de la connexion'" });
   }
 }
 

@@ -110,7 +110,7 @@ async function login(req, res) {
     );
 
     if (result.rows.length === 0) {
-      return res.Status(400).json({ message: "Identifiant invalides" });
+      return res.status(400).json({ message: "Identifiant invalides" });
     }
 
     const user = result.rows[0];

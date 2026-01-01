@@ -4,6 +4,8 @@ const {
   getOneOfferById,
   getMyOffers,
   createOffer,
+  updateOffer,
+  deleteOneOffer,
 } = require("../controllers/offres.controller");
 const {
   authenticateToken,
@@ -24,6 +26,20 @@ router.post(
   authenticateToken,
   authorizeRole("PRESTATAIRE", "ADMIN"),
   createOffer
+);
+
+router.put(
+  `/:id`,
+  authenticateToken,
+  authorizeRole("PRESTATAIRE", "ADMIN"),
+  updateOffer
+);
+
+router.delete(
+  `/:id`,
+  authenticateToken,
+  authorizeRole("ADMIN"),
+  deleteOneOffer
 );
 
 module.exports = router;

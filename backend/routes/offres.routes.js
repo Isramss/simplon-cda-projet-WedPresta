@@ -14,13 +14,13 @@ const {
 const router = express.Router();
 
 router.get("/", getAllOffers);
-router.get(`/:id`, getOneOfferById);
 router.get(
   "/Mes-offres",
   authenticateToken,
   authorizeRole("PRESTATAIRE", "ADMIN"),
   getMyOffers
 );
+router.get(`/:id`, getOneOfferById);
 router.post(
   "/",
   authenticateToken,

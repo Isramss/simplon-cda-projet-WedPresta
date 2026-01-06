@@ -5,28 +5,30 @@ async function getAllOffers(req, res) {
   try {
     const result = await pool.query(
       `SELECT 
-        o.id_offre,
-        o.titre,
-        o.description,
-        o.prix_min,
-        o.zone_intervention,
-        o.date_creation,
-        o.statut,
-        o.image_url,
-        c.libelle_categorie,
-        u.nom AS prestatire_nom
-    FROM offres o
-    LEFT JOIN categories c ON o.id_categorie = c.id_categorie
-    LEFT JOIN utilisateurs u ON o.id_utilisateur = u.id_utilisateur
-    ORDER BY o.date_creation DESC`
+         o.id_offre,
+         o.titre,
+         o.description,
+         o.prix_min,
+         o.zone_intervention,
+         o.date_creation,
+         o.date_maj,
+         o.statut,
+         o.image_url,
+         u.id_utilisateur,
+         u.nom AS prestataire_nom,
+         u.email AS prestataire_email
+       FROM offres o
+       LEFT JOIN utilisateurs u 
+         ON o.id_utilisateur = u.id_utilisateur
+       ORDER BY o.id_offre`
     );
+
     return res.json(result.rows);
   } catch (error) {
-    console.error("Erreur getAllOffres :", error);
-
+    console.error("Erreur getAllOffers:", error);
     return res
       .status(500)
-      .json({ message: "Erreur serveur lors de la récuperation des offres" });
+      .json({ message: "Erreur serveur lors de la récupération des offres" });
   }
 }
 

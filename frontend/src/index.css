@@ -1,0 +1,158 @@
+@import url("https://fonts.googleapis.com/css2?family=Aboreto&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+body {
+  font-family: "Lora", serif;
+  margin: 0 !important;
+}
+
+.title,
+h1,
+h2,
+.nav-logo {
+  font-family: "Aboreto", cursive;
+  letter-spacing: 1px;
+}
+
+/* Layout page offre */
+.offer-details-layout {
+  display: block; /* mobile par défaut */
+}
+
+.offer-details-aside {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  align-self: flex-start;
+}
+
+/* Desktop : 2 colonnes */
+@media (min-width: 769px) {
+  .offer-details-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: flex-start;
+  }
+}
+
+/* Mobile : formulaire en dessous */
+@media (max-width: 768px) {
+  .offer-details-aside {
+    margin-top: 2rem;
+  }
+}
+
+/* Formulaire contact */
+.contact-form-wrapper {
+  margin-top: 1rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #f9f1f3;
+}
+
+.contact-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.8rem;
+}
+
+.contact-form-field label {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.contact-form-field input,
+.contact-form-field textarea {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.9rem;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* Grille 2 colonnes seulement sur écrans moyens+ */
+.contact-grid-2 {
+  display: block;
+}
+
+@media (min-width: 720px) {
+  .contact-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+}
+
+.form-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.form-success {
+  color: green;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.contact-submit-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: #2b2626;
+  color: white;
+  cursor: pointer;
+}
+
+/* fond rose principal de la page offre */
+.offer-page {
+  background: linear-gradient(180deg, #ffe9f0 0%, #ffffff 35%);
+  min-height: 100vh;
+}
+
+/* bloc formulaire rose */
+.contact-card {
+  background: rgba(255, 215, 225, 0.75);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 180, 200, 0.5);
+}
+
+/* labels + champs */
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #5a3b45;
+}
+
+/* organisation 2 colonnes desktop -> 1 mobile */
+.contact-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+@media (max-width: 820px) {
+  .offer-details-layout {
+    display: block !important;
+  }
+
+  .contact-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  aside {
+    margin-top: 1.5rem;
+  }
+}

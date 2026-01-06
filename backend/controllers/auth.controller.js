@@ -87,22 +87,28 @@ async function login(req, res) {
   try {
     const { email, motDePasse } = req.body;
 
-    // je re verifie les champs obligatoires
+    // Vérif des champs obligatoires
     if (!email || !motDePasse) {
       return res
         .status(400)
         .json({ message: "Email et mot de passe obligatoires" });
     }
-    // Regex
 
+    // Vérif du format d'email + regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Format d'email invalide" });
     }
 
-    // Je recupere les informations de l'utilisateur qui souhaite se connecter
+    // Je récupération de l'utilisateur en BDD
     const result = await pool.query(
-      `SELECT u.id_utilisateur, u.email, u.mot_de_passe, r.code_role
+      `SELECT 
+          u.id_utilisateur,
+          u.nom,
+          u.email,
+          u.mot_de_passe,
+          u.actif,
+          r.code_role
         FROM utilisateurs u
         JOIN roles r ON u.id_role = r.id_role
         WHERE u.email = $1`,
@@ -110,23 +116,35 @@ async function login(req, res) {
     );
 
     if (result.rows.length === 0) {
-      return res.status(400).json({ message: "Identifiant invalides" });
+      return res.status(400).json({ message: "Identifiants invalides" });
     }
 
     const user = result.rows[0];
 
-    // Mtn je verifie le mdp avec Bcrypt
+    // Vérif du mot de passe
     const isValidPassword = await bcrypt.compare(motDePasse, user.mot_de_passe);
     if (!isValidPassword) {
       return res.status(400).json({ message: "Identifiants invalides" });
     }
 
+    // Vérif du statut actif
+    if (!user.actif) {
+      return res.status(403).json({
+        message: "Votre compte est désactivé par l'administrateur",
+      });
+    }
+
+    //Génération du token JWT
     const token = jwt.sign(
-      { id: user.id_utilisateur, role: user.code_role },
+      {
+        id: user.id_utilisateur,
+        role: user.code_role,
+      },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
     );
 
+    //Réponse OK
     return res.json({
       message: "Connexion réussie",
       user: {
@@ -134,6 +152,7 @@ async function login(req, res) {
         nom: user.nom,
         email: user.email,
         role: user.code_role,
+        actif: user.actif,
       },
       token,
     });
@@ -141,7 +160,7 @@ async function login(req, res) {
     console.error("Erreur dans login :", error);
     return res
       .status(500)
-      .json({ message: "Erreur serveur lors de la connexion'" });
+      .json({ message: "Erreur serveur lors de la connexion" });
   }
 }
 

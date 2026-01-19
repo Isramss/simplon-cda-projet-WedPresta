@@ -114,7 +114,7 @@ function Navbar() {
             alignItems: "center",
           }}>
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/inscription")}
             style={{
               padding: ".4rem 1rem",
               borderRadius: "999px",

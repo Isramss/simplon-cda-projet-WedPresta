@@ -105,9 +105,6 @@ function DashboardPresta() {
   return (
     <div style={{ padding: "2rem 1rem", maxWidth: "1100px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: ".2rem" }}>Mon espace prestataire</h1>
-      <p style={{ marginBottom: "1.5rem", color: "#555" }}>
-        Bienvenue {user.nom || user.prenom || ""} 👋
-      </p>
 
       {/* Onglets */}
       <div

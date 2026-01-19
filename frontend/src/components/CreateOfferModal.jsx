@@ -219,7 +219,6 @@ function CreateOfferModal({ onClose, onCreated }) {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              required
               rows={4}
               style={{
                 width: "100%",

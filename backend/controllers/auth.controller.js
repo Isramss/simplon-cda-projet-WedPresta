@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../db");
 require("dotenv").config();
 
-const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10);
+const SALT_ROUNDS = Number.parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10);
 
 //Inscription
 async function register(req, res) {

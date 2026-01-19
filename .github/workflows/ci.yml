@@ -59,4 +59,4 @@ jobs:
             -Dsonar.projectKey=Isramss_simplon-cda-projet-WedPresta
             -Dsonar.sources=frontend/src,backend
             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
-            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.wait=false

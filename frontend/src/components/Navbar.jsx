@@ -1,6 +1,5 @@
 // src/components/Navbar.jsx
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
 
 function Navbar() {
   const navigate = useNavigate();

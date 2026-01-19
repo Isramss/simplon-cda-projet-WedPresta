@@ -1,5 +1,5 @@
 // src/App.jsx
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import DashboardPresta from "./pages/DashboardPresta.jsx";
@@ -10,19 +10,7 @@ import Register from "./components/RegisterPresta.jsx";
 import OfferDetail from "./pages/OfferDetail.jsx";
 
 function App() {
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const token = localStorage.getItem("token");
-  const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
-  const role = user?.role || user?.code_role || user?.libelle_role || null;
-
-  function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/");
-  }
 
   const hideHeader =
     location.pathname === "/login" || location.pathname === "/inscription";

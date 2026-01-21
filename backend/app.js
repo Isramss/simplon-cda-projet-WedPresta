@@ -9,8 +9,21 @@ const adressesRoutes = require("./routes/adresses.routes");
 const messagesRoutes = require("./routes/messages.routes");
 
 const app = express();
+app.disable("x-powered-by");
 
-app.use(cors());
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // autorise aussi les outils sans origin (Postman/curl)
+      if (!origin) return cb(null, true);
+      return allowedOrigins.includes(origin)
+        ? cb(null, true)
+        : cb(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // healthcheck (super utile pour CI/Docker)

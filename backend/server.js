@@ -1,5 +1,7 @@
 const app = require("./app");
-require("dotenv").config();
+if (process.env.NODE_ENV !== "test") {
+  require("dotenv").config();
+}
 
 const PORT = process.env.PORT || 5000;
 

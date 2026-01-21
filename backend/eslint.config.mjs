@@ -28,6 +28,7 @@ export default defineConfig([
         afterAll: "readonly",
         beforeEach: "readonly",
         afterEach: "readonly",
+        jest: "readonly",
       },
     },
   },

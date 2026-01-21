@@ -50,6 +50,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Backend tests + coverage
+        working-directory: backend
+        run: |
+          npm ci
+          npm run test:ci
+
       - uses: SonarSource/sonarcloud-github-action@v3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -58,5 +68,6 @@ jobs:
             -Dsonar.organization=isramss
             -Dsonar.projectKey=Isramss_simplon-cda-projet-WedPresta
             -Dsonar.sources=frontend/src,backend
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/coverage/**
             -Dsonar.qualitygate.wait=false
+            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info

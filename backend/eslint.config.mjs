@@ -20,6 +20,7 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.node,
+        jest: "readonly",
         describe: "readonly",
         it: "readonly",
         test: "readonly",
@@ -28,7 +29,6 @@ export default defineConfig([
         afterAll: "readonly",
         beforeEach: "readonly",
         afterEach: "readonly",
-        jest: "readonly",
       },
     },
   },

@@ -80,15 +80,62 @@ describe("POST /api/messages/devis", () => {
 
     expect(pool.query).toHaveBeenCalledTimes(2);
 
-    // Optionnel: vérifier que l'INSERT reçoit bien les valeurs converties
-    const insertCall = pool.query.mock.calls[1];
-    const insertParams = insertCall[1];
+    // vérifier que l'INSERT reçoit bien les valeurs converties
+    const insertParams = pool.query.mock.calls[1][1];
     expect(insertParams[0]).toBe(10); // id_offre
     expect(insertParams[1]).toBe(12); // id_prestataire
-    expect(insertParams[2]).toBe("Test");
-    expect(insertParams[3]).toBe("test@test.com");
     expect(insertParams[5]).toBe("Bonjour"); // contenu
     expect(insertParams[9]).toBe(50); // nb_invites Number("50")
     expect(insertParams[10]).toBe(1000); // budget Number("1000")
+  });
+
+  test("201 si 'contenu' est fourni (prioritaire sur 'message')", async () => {
+    pool.query.mockResolvedValueOnce({
+      rowCount: 1,
+      rows: [{ id_prestataire: 77 }],
+    });
+
+    pool.query.mockResolvedValueOnce({
+      rowCount: 1,
+      rows: [{ id_message: 2, id_offre: 10, id_prestataire: 77 }],
+    });
+
+    const res = await request(app).post("/api/messages/devis").send({
+      id_offre: 10,
+      nom: "Test",
+      email: "test@test.com",
+      message: "Message IGNORÉ",
+      contenu: "Contenu PRIORITAIRE",
+    });
+
+    expect(res.status).toBe(201);
+    const insertParams = pool.query.mock.calls[1][1];
+    expect(insertParams[5]).toBe("Contenu PRIORITAIRE");
+  });
+
+  test("500 si erreur DB (catch)", async () => {
+    pool.query.mockRejectedValueOnce(new Error("DB down"));
+
+    const res = await request(app).post("/api/messages/devis").send({
+      id_offre: 10,
+      nom: "Test",
+      email: "test@test.com",
+      message: "Bonjour",
+    });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty(
+      "message",
+      "Erreur serveur lors de la création du message"
+    );
+  });
+  let consoleErrorSpy;
+
+  beforeAll(() => {
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
   });
 });

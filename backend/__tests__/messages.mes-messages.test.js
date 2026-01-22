@@ -1,4 +1,4 @@
-process.env.JWT_SECRET = "test-secret"; // ← AVANT require(app)
+process.env.JWT_SECRET = "test-secret"; // IMPORTANT: avant require(app)
 
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
@@ -13,7 +13,7 @@ const pool = require("../db");
 describe("GET /api/messages/mes-messages", () => {
   beforeEach(() => {
     pool.query.mockReset();
-    process.env.JWT_SECRET = "test-secret"; // pour jwt.verify
+    process.env.JWT_SECRET = "test-secret";
   });
 
   it("401 si aucun token", async () => {
@@ -73,7 +73,6 @@ describe("GET /api/messages/mes-messages", () => {
     expect(res.body.length).toBe(1);
     expect(res.body[0]).toHaveProperty("titre_offre");
 
-    // On vérifie aussi que la query est appelée avec l'id du prestataire
     expect(pool.query).toHaveBeenCalled();
     expect(pool.query.mock.calls[0][1]).toEqual([1]);
   });
@@ -92,5 +91,30 @@ describe("GET /api/messages/mes-messages", () => {
 
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("500 si erreur DB", async () => {
+    const token = jwt.sign(
+      { id_utilisateur: 1, role: "PRESTATAIRE" },
+      process.env.JWT_SECRET
+    );
+
+    pool.query.mockRejectedValueOnce(new Error("DB down"));
+
+    const res = await request(app)
+      .get("/api/messages/mes-messages")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("message");
+  });
+  let consoleErrorSpy;
+
+  beforeAll(() => {
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
   });
 });

@@ -40,7 +40,7 @@ jobs:
 
       - run: npm ci
       - run: npm run lint --if-present
-      - run: npm run test
+      - run: npm run test:ci
       - run: npm run build
   sonar:
     name: SonarCloud
@@ -66,11 +66,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=isramss
-            -Dsonar.projectKey=Isramss_simplon-cda-projet-WedPresta
-            -Dsonar.sources=frontend/src,backend
-             -Dsonar.tests=backend/__tests__
-            -Dsonar.test.inclusions=backend/__tests__/**/*.test.js
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/coverage/**,backend/server.js
-            -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info
-            -Dsonar.qualitygate.wait=false
+            args: >
+              -Dsonar.organization=isramss
+              -Dsonar.projectKey=Isramss_simplon-cda-projet-WedPresta
+              -Dsonar.sources=frontend/src,backend
+              -Dsonar.tests=backend/__tests__,frontend/src/__tests__
+              -Dsonar.test.inclusions=backend/__tests__/**/*.test.js,frontend/src/__tests__/**/*.{test,spec}.{js,jsx,ts,tsx}
+              -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/coverage/**,backend/server.js,frontend/src/__tests__/**,backend/__tests__/**
+              -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
+              -Dsonar.qualitygate.wait=false

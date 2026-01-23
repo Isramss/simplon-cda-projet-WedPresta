@@ -11,10 +11,13 @@ const messagesRoutes = require("./routes/messages.routes");
 const app = express();
 app.disable("x-powered-by");
 
-app.use(cors());
+const corsOptions = {
+  origin: "trustedwebsite.com",
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// healthcheck (super utile pour CI/Docker)
 app.get("/health", (req, res) => {
   res.status(200).json({ ok: true });
 });

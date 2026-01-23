@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+const secret = process.env.JWT_SECRET || "test-secret";
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
@@ -9,9 +9,8 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ message: "Token manquant" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, secret, (err, user) => {
     if (err) {
-      console.error("Erreur vérification token :", err);
       return res.status(403).json({ message: "Token invalide ou expiré" });
     }
     req.user = user;

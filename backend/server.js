@@ -1,32 +1,10 @@
-// server.js
-const express = require("express");
-const cors = require("cors");
 require("dotenv").config();
 
-const app = express();
+const app = require("./app");
 
-const authRoutes = require("./routes/auth.routes");
-const offresRoutes = require("./routes/offres.routes");
-const utilisateursRoutes = require("./routes/users.routes");
-const categoriesRoutes = require("./routes/categories.routes");
-const adressesRoutes = require("./routes/adresses.routes");
-const messagesRoutes = require("./routes/messages.routes");
+const PORT = process.env.PORT || 3001;
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.json({ message: "API WedPresta opérationnelle 🥳" });
-});
-
-app.use("/api/auth", authRoutes);
-app.use("/api/offres", offresRoutes);
-app.use("/api/utilisateurs", utilisateursRoutes);
-app.use("/api/categories", categoriesRoutes);
-app.use("/api/adresses", adressesRoutes);
-app.use("/api/messages", messagesRoutes);
-
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Le serveur lancé sur le port ${PORT}`);
+  console.log(`Serveur lancé sur le port ${PORT}`);
+  console.log("DB =", process.env.DB_NAME);
 });

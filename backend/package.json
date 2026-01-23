@@ -39,7 +39,8 @@
       "**/*.js",
       "!**/node_modules/**",
       "!**/coverage/**",
-      "!server.js"
+      "!server.js",
+      "!db.js"
     ]
   }
 }

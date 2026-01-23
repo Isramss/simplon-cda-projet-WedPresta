@@ -1,10 +1,10 @@
-const app = require("./app");
-if (process.env.NODE_ENV !== "test") {
-  require("dotenv").config();
-}
+require("dotenv").config();
 
-const PORT = process.env.PORT || 5000;
+const app = require("./app");
+
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`Le serveur lancé sur le port ${PORT}`);
+  console.log(`Serveur lancé sur le port ${PORT}`);
+  console.log("DB =", process.env.DB_NAME);
 });

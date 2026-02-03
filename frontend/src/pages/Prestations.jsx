@@ -10,7 +10,7 @@ function Prestations() {
   useEffect(() => {
     async function loadOffers() {
       try {
-        const res = await fetch("http://localhost:3001/api/offres");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/offres`);
         const data = await res.json();
         setOffres(Array.isArray(data) ? data : []);
       } catch (e) {

@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:15
+    container_name: wedpresta-db
+    environment:
+      POSTGRES_DB: wedpresta
+      POSTGRES_USER: msadak
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # optionnel : scripts SQL d'init (si tu en as)
+      - ./db/init:/docker-entrypoint-initdb.d
+
+  backend:
+    build: ./backend
+    container_name: wedpresta-backend
+    env_file:
+      - .env.docker
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: msadak
+      DB_PASSWORD: postgres
+      DB_NAME: wedpresta
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: wedpresta-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3001
+
+volumes:
+  postgres_data:

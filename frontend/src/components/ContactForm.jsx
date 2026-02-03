@@ -28,21 +28,24 @@ function ContactForm({ offre }) {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3001/api/messages/devis", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id_offre: offre.id_offre,
-          nom,
-          email,
-          telephone,
-          date_mariage: dateMariage || null,
-          lieu_mariage: lieuMariage || null,
-          nb_invites: nbInvites ? Number(nbInvites) : null,
-          budget_estime: budget ? Number(budget) : null,
-          contenu: contenu,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/messages/devis`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_offre: offre.id_offre,
+            nom,
+            email,
+            telephone,
+            date_mariage: dateMariage || null,
+            lieu_mariage: lieuMariage || null,
+            nb_invites: nbInvites ? Number(nbInvites) : null,
+            budget_estime: budget ? Number(budget) : null,
+            contenu: contenu,
+          }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok) {

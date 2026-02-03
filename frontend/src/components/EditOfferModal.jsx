@@ -19,7 +19,7 @@ function EditOfferModal({ offer, onClose, onUpdated }) {
       const token = localStorage.getItem("token");
 
       const res = await fetch(
-        `http://localhost:3001/api/offres/${offer.id_offre}`,
+        `${import.meta.env.VITE_API_URL}/api/offres/${offer.id_offre}`,
         {
           method: "PUT",
           headers: {

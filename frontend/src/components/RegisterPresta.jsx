@@ -38,18 +38,21 @@ function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3001/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nom,
-          email,
-          motDePasse: motDePasse,
-          telephone,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nom,
+            email,
+            motDePasse: motDePasse,
+            telephone,
+          }),
+        }
+      );
 
       const data = await res.json();
       console.log("Réponse inscription :", data);
@@ -58,16 +61,19 @@ function Register() {
         throw new Error(data.message || "Erreur lors de l’inscription");
       }
 
-      const loginRes = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          motDePasse, // ⬅ ATTENTION : même nom que ton endpoint de login
-        }),
-      });
+      const loginRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            motDePasse, // ⬅ ATTENTION : même nom que ton endpoint de login
+          }),
+        }
+      );
 
       const loginData = await loginRes.json();
       console.log("Réponse auto-login :", loginData);

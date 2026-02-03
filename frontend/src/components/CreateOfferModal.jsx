@@ -23,7 +23,9 @@ function CreateOfferModal({ onClose, onCreated }) {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch("http://localhost:3001/api/categories");
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/categories`
+        );
         const data = await res.json();
 
         if (!res.ok) {

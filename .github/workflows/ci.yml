@@ -54,12 +54,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-  projectBaseDir: backend
-  args: >
-    -Dsonar.organization=isramss
-    -Dsonar.projectKey=isramss_backend-wedpresta
-    -Dsonar.qualitygate.wait=true
-    -Dsonar.qualitygate.timeout=300
+          projectBaseDir: backend
+          args: >
+            -Dsonar.organization=isramss
+            -Dsonar.projectKey=isramss_backend-wedpresta
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
 
   frontend:
     name: Build & Test (frontend)

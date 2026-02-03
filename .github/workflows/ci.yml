@@ -73,4 +73,6 @@ jobs:
             -Dsonar.test.inclusions=backend/__tests__/**/*.test.js,frontend/src/__tests__/**/*.{test,spec}.{js,jsx,ts,tsx}
             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/coverage/**,backend/server.js,frontend/src/__tests__/**,backend/__tests__/**
             -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
-            -Dsonar.qualitygate.wait=false
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
+            -Dsonar.pullrequest.provider=GitHub

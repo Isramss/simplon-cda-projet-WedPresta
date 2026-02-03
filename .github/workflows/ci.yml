@@ -10,6 +10,25 @@ permissions:
   pull-requests: write
 
 jobs:
+  # ─── Définit les args Sonar selon la branch (une seule fois) ───
+  sonar-args:
+    name: Prepare Sonar Args
+    runs-on: ubuntu-latest
+    outputs:
+      backend_args: ${{ steps.set.outputs.backend_args }}
+      frontend_args: ${{ steps.set.outputs.frontend_args }}
+    steps:
+      - id: set
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "backend_args=-Dsonar.organization=isramss -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_backend -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300" >> $GITHUB_OUTPUT
+            echo "frontend_args=-Dsonar.organization=isramss -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_frontend -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300" >> $GITHUB_OUTPUT
+          else
+            echo "backend_args=-Dsonar.organization=isramss -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_backend" >> $GITHUB_OUTPUT
+            echo "frontend_args=-Dsonar.organization=isramss -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_frontend" >> $GITHUB_OUTPUT
+          fi
+
+  # ─── Build & Test Backend ───
   backend:
     name: Build & Test (backend)
     runs-on: ubuntu-latest
@@ -29,10 +48,11 @@ jobs:
       - run: npm run lint
       - run: npm run test:ci
 
+  # ─── Quality Gate Backend ───
   sonar_backend:
     name: Quality Gate (backend)
     runs-on: ubuntu-latest
-    needs: [backend]
+    needs: [backend, sonar-args]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,25 +62,22 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install + tests + coverage (backend)
+      - name: Install + tests + coverage
         working-directory: backend
         run: |
           npm ci
           npm run test:ci
 
-      - name: SonarCloud Scan (backend)
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectBaseDir: backend
-          args: >
-            -Dsonar.organization=isramss
-            -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_backend
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=300
+          args: ${{ needs.sonar-args.outputs.backend_args }}
 
+  # ─── Build & Test Frontend ───
   frontend:
     name: Build & Test (frontend)
     runs-on: ubuntu-latest
@@ -81,10 +98,11 @@ jobs:
       - run: npm run test:ci
       - run: npm run build
 
+  # ─── Quality Gate Frontend ───
   sonar_frontend:
     name: Quality Gate (frontend)
     runs-on: ubuntu-latest
-    needs: [frontend]
+    needs: [frontend, sonar-args]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,21 +112,17 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install + tests + coverage (frontend)
+      - name: Install + tests + coverage
         working-directory: frontend
         run: |
           npm ci
           npm run test:ci
 
-      - name: SonarCloud Scan (frontend)
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectBaseDir: frontend
-          args: >
-            -Dsonar.organization=isramss
-            -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_frontend
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=300
+          args: ${{ needs.sonar-args.outputs.frontend_args }}

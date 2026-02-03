@@ -57,7 +57,7 @@ jobs:
           projectBaseDir: backend
           args: >
             -Dsonar.organization=isramss
-            -Dsonar.projectKey=isramss_backend-wedpresta
+            -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_backend
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300
 
@@ -108,5 +108,7 @@ jobs:
         with:
           projectBaseDir: frontend
           args: >
+            -Dsonar.organization=isramss
+            -Dsonar.projectKey=isramss_simplon-cda-projet-WedPresta_frontend
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300

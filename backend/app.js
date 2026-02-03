@@ -11,11 +11,23 @@ const messagesRoutes = require("./routes/messages.routes");
 const app = express();
 app.disable("x-powered-by");
 
-const corsOptions = {
-  origin: "trustedwebsite.com",
-};
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:4173", // preview vite (optionnel)
+];
 
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.includes(origin)) return cb(null, true);
+      return cb(new Error("Not allowed by CORS: " + origin));
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.get("/health", (req, res) => {

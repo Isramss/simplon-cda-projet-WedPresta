@@ -33,7 +33,7 @@ describe("AUTH – register & login", () => {
         // nom + motDePasse manquants
       });
 
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(200); // test devops //
       expect(res.body).toHaveProperty("message");
       expect(pool.query).not.toHaveBeenCalled();
     });

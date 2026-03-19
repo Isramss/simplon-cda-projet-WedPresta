@@ -2,13 +2,21 @@
 node_modules
 npm-debug.log
 .env
+.env.docker
 
 node_modules/
 dist/
 build/
+
+coverage
 
 # Mac
 .DS_Store
 
 # Build front
 frontend/build
+
+# Claude Code - configuration locale
+.claude/
+.mcp.json
+.claude.json

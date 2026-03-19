@@ -16,7 +16,7 @@ function OfferCard({ offre }) {
         borderRadius: "10px",
         boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
         overflow: "hidden",
-        maxWidth: "320px",
+        width: "100%",
         display: "flex",
         flexDirection: "column",
       }}>

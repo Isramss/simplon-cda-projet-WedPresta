@@ -10,7 +10,7 @@ function Prestations() {
   useEffect(() => {
     async function loadOffers() {
       try {
-        const res = await fetch("http://localhost:3001/api/offres");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/offres`);
         const data = await res.json();
         setOffres(Array.isArray(data) ? data : []);
       } catch (e) {
@@ -34,7 +34,7 @@ function Prestations() {
   });
 
   return (
-    <div style={{ padding: "3rem 2rem" }}>
+    <div className="page-container">
       <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>Prestations</h1>
 
       {/* barre de recherche */}
@@ -62,14 +62,7 @@ function Prestations() {
           Aucune prestation ne correspond à votre recherche.
         </p>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "2rem",
-            maxWidth: "1100px",
-            margin: "0 auto",
-          }}>
+        <div className="offers-grid">
           {filtered.map((offre) => (
             <OfferCard key={offre.id_offre} offre={offre} />
           ))}

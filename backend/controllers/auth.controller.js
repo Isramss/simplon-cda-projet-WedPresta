@@ -6,8 +6,6 @@ const SALT_ROUNDS = Number.parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10);
 
 //Inscription
 async function register(req, res) {
-  console.log("register - body reçu:", req.body);
-
   try {
     const { nom, email, motDePasse, telephone } = req.body;
 
@@ -81,8 +79,6 @@ async function register(req, res) {
 // Connexion
 
 async function login(req, res) {
-  console.log("login - body reçu :", req.body);
-
   try {
     const { email, motDePasse } = req.body;
 

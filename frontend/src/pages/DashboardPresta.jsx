@@ -36,11 +36,14 @@ function DashboardPresta() {
   async function fetchMyOffers() {
     try {
       setOffersLoading(true);
-      const res = await fetch("http://localhost:3001/api/offres/Mes-offres", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/offres/Mes-offres`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       const data = await res.json();
       setOffres(Array.isArray(data) ? data : []);
@@ -62,7 +65,7 @@ function DashboardPresta() {
       setMessagesError("");
 
       const res = await fetch(
-        "http://localhost:3001/api/messages/mes-messages",
+        `${import.meta.env.VITE_API_URL}/api/messages/mes-messages`,
         {
           headers: {
             Authorization: "Bearer " + token,

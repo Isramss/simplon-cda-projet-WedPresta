@@ -1,4 +1,3 @@
-// src/pages/OfferDetails.jsx
 import "../index.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -14,7 +13,9 @@ function OfferDetail() {
   useEffect(() => {
     async function fetchOffer() {
       try {
-        const res = await fetch(`http://localhost:3001/api/offres/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/offres/${id}`
+        );
         const data = await res.json();
 
         if (!res.ok) {

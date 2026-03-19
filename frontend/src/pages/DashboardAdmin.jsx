@@ -34,7 +34,7 @@ function DashboardAdmin() {
 
     try {
       const res = await fetch(
-        "http://localhost:3001/api/utilisateurs/prestataires",
+        `${import.meta.env.VITE_API_URL}/api/utilisateurs/prestataires`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -62,7 +62,7 @@ function DashboardAdmin() {
     setOffresError("");
 
     try {
-      const res = await fetch("http://localhost:3001/api/offres", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/offres`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -110,7 +110,9 @@ function DashboardAdmin() {
 
     try {
       const res = await fetch(
-        `http://localhost:3001/api/utilisateurs/${presta.id_utilisateur}/actif`,
+        `${import.meta.env.VITE_API_URL}/api/utilisateurs/${
+          presta.id_utilisateur
+        }/actif`,
         {
           method: "PUT",
           headers: {
@@ -151,7 +153,7 @@ function DashboardAdmin() {
 
     try {
       const res = await fetch(
-        `http://localhost:3001/api/offres/${offre.id_offre}`,
+        `${import.meta.env.VITE_API_URL}/api/offres/${offre.id_offre}`,
         {
           method: "DELETE",
           headers: {

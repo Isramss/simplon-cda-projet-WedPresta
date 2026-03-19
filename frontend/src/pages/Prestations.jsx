@@ -34,7 +34,7 @@ function Prestations() {
   });
 
   return (
-    <div style={{ padding: "3rem 2rem" }}>
+    <div className="page-container">
       <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>Prestations</h1>
 
       {/* barre de recherche */}
@@ -62,14 +62,7 @@ function Prestations() {
           Aucune prestation ne correspond à votre recherche.
         </p>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "2rem",
-            maxWidth: "1100px",
-            margin: "0 auto",
-          }}>
+        <div className="offers-grid">
           {filtered.map((offre) => (
             <OfferCard key={offre.id_offre} offre={offre} />
           ))}

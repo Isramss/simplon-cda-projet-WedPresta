@@ -1,9 +1,29 @@
-// src/components/Navbar.jsx
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import "../index.css";
 
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef(null);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth > 1024) setMenuOpen(false);
+    }
+    function handleClickOutside(e) {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    window.addEventListener("resize", handleResize);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -12,32 +32,19 @@ function Navbar() {
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setMenuOpen(false);
     navigate("/");
   }
 
   function scrollToSection(id) {
-    // si on n’est pas sur la home, on y va d’abord
+    setMenuOpen(false);
     if (location.pathname !== "/") {
       navigate("/#" + id);
       return;
     }
     const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+    if (section) section.scrollIntoView({ behavior: "smooth" });
   }
-
-  const headerStyle = {
-    position: "sticky",
-    top: 0,
-    zIndex: 10,
-    padding: "1rem 2rem",
-    display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    backdropFilter: "blur(10px)",
-    color: "white",
-  };
 
   const logo = (
     <div
@@ -46,72 +53,41 @@ function Navbar() {
         fontFamily: "Aboreto, serif",
         letterSpacing: "2px",
         cursor: "pointer",
+        color: "white",
       }}
-      onClick={() => navigate("/")}>
+      onClick={() => { setMenuOpen(false); navigate("/"); }}>
       WEDPRESTA
     </div>
   );
 
-  /* ======================
-            VISITEUR 
-     ====================== */
+  const linkStyle = { color: "white", textDecoration: "none" };
+  const btnStyle = {
+    color: "white",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: "Lora, serif",
+    fontSize: "0.9rem",
+  };
+
+  /* ====================== VISITEUR ====================== */
   if (!token) {
     return (
-      <header style={headerStyle}>
+      <header className="navbar" ref={navRef}>
+        {/* Gauche vide pour centrer */}
         <div style={{ width: "150px" }} />
 
-        <nav
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            gap: "1.5rem",
-            alignItems: "center",
-            fontSize: ".9rem",
-          }}>
-          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-            Accueil
-          </Link>
-
-          <Link
-            to="/prestations"
-            style={{ color: "white", textDecoration: "none" }}>
-            Prestations
-          </Link>
-
+        {/* Centre desktop */}
+        <nav className="navbar-center">
+          <Link to="/" style={linkStyle}>Accueil</Link>
+          <Link to="/prestations" style={linkStyle}>Prestations</Link>
           {logo}
-
-          <button
-            type="button"
-            style={{
-              color: "white",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
-            onClick={() => scrollToSection("apropos")}>
-            À propos
-          </button>
-
-          <button
-            type="button"
-            style={{
-              color: "white",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
-            onClick={() => scrollToSection("contact")}>
-            Nous contacter
-          </button>
+          <button style={btnStyle} onClick={() => scrollToSection("apropos")}>À propos</button>
+          <button style={btnStyle} onClick={() => scrollToSection("contact")}>Nous contacter</button>
         </nav>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "0.8rem",
-            alignItems: "center",
-          }}>
+        {/* Droite desktop */}
+        <div className="navbar-right">
           <button
             onClick={() => navigate("/inscription")}
             style={{
@@ -125,99 +101,93 @@ function Navbar() {
             }}>
             Devenir prestataire
           </button>
+          <Link to="/login" style={linkStyle}>Connexion</Link>
+        </div>
 
-          <Link to="/login" style={{ color: "white", textDecoration: "none" }}>
-            Connexion
-          </Link>
+        {/* Logo centré mobile/tablette */}
+        <div className="navbar-logo-mobile" onClick={() => { setMenuOpen(false); navigate("/"); }}>
+          WEDPRESTA
+        </div>
+
+        {/* Hamburger mobile */}
+        <button className="navbar-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+
+        {/* Menu mobile */}
+        <div className={`navbar-mobile-menu ${menuOpen ? "open" : ""}`}>
+          <Link to="/" style={linkStyle} onClick={() => setMenuOpen(false)}>Accueil</Link>
+          <Link to="/prestations" style={linkStyle} onClick={() => setMenuOpen(false)}>Prestations</Link>
+          <button style={btnStyle} onClick={() => scrollToSection("apropos")}>À propos</button>
+          <button style={btnStyle} onClick={() => scrollToSection("contact")}>Nous contacter</button>
+          <Link to="/inscription" style={linkStyle} onClick={() => setMenuOpen(false)}>Devenir prestataire</Link>
+          <Link to="/login" style={linkStyle} onClick={() => setMenuOpen(false)}>Connexion</Link>
         </div>
       </header>
     );
   }
 
-  /* ======================
-      PRESTATAIRE
-     ====================== */
+  /* ====================== PRESTATAIRE ====================== */
   if (role === "PRESTATAIRE") {
     return (
-      <header style={headerStyle}>
-        {/* espace gauche */}
+      <header className="navbar" ref={navRef}>
         <div style={{ width: "150px" }} />
 
-        {/* centre : logo seul */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
           {logo}
         </div>
 
-        {/* droite : liens presta */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            alignItems: "center",
-            fontSize: ".9rem",
-          }}>
-          <p>Bienvenue {user.nom || user.prenom || ""} 👋</p>
-          <button
-            onClick={handleLogout}
-            style={{
-              marginLeft: ".5rem",
-              padding: ".3rem .7rem",
-              cursor: "pointer",
-            }}>
+        <div className="navbar-right" style={{ fontSize: ".9rem" }}>
+          <p style={{ margin: 0 }}>Bienvenue {user.nom || ""} 👋</p>
+          <button onClick={handleLogout} style={{ ...btnStyle, border: "1px solid white", padding: ".3rem .7rem", borderRadius: "4px" }}>
             Déconnexion
           </button>
+        </div>
+
+        {/* Hamburger mobile */}
+        <button className="navbar-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <div className={`navbar-mobile-menu ${menuOpen ? "open" : ""}`}>
+          <span style={{ color: "white" }}>Bienvenue {user.nom || ""} 👋</span>
+          <button style={btnStyle} onClick={handleLogout}>Déconnexion</button>
         </div>
       </header>
     );
   }
 
-  /* ======================
-      ADMIN
-     ====================== */
+  /* ====================== ADMIN ====================== */
   if (role === "ADMIN") {
     return (
-      <header style={headerStyle}>
-        {/* espace gauche */}
+      <header className="navbar" ref={navRef}>
         <div style={{ width: "150px" }} />
 
-        {/* centre : logo */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
+        <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
           {logo}
         </div>
 
-        {/* droite : liens admin */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            alignItems: "center",
-            fontSize: ".9rem",
-          }}>
-          <p style={{ color: "#fff" }}>
-            Bonjour {user.nom || user.prenom || ""} 👋
-          </p>
-
-          <button
-            onClick={handleLogout}
-            style={{
-              marginLeft: ".5rem",
-              padding: ".3rem .7rem",
-              cursor: "pointer",
-            }}>
+        <div className="navbar-right" style={{ fontSize: ".9rem" }}>
+          <p style={{ margin: 0, color: "#fff" }}>Bonjour {user.nom || ""} 👋</p>
+          <button onClick={handleLogout} style={{ ...btnStyle, border: "1px solid white", padding: ".3rem .7rem", borderRadius: "4px" }}>
             Déconnexion
           </button>
+        </div>
+
+        {/* Hamburger mobile */}
+        <button className="navbar-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <div className={`navbar-mobile-menu ${menuOpen ? "open" : ""}`}>
+          <span style={{ color: "white" }}>Bonjour {user.nom || ""} 👋</span>
+          <button style={btnStyle} onClick={handleLogout}>Déconnexion</button>
         </div>
       </header>
     );
